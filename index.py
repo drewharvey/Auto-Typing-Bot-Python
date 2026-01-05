@@ -4,6 +4,8 @@ from pynput.keyboard import Controller
 import threading
 import random
 import time
+import logging
+from pattern_matcher import PatternMatcher
 
 # Globals
 is_typing = False
@@ -12,20 +14,67 @@ min_wpm = 40
 max_wpm = 60
 typing_thread = None
 keyboard = Controller()
+pattern_matcher = PatternMatcher('java')  # Default to Java
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('/tmp/auto_typing_debug.log'),
+        logging.StreamHandler()
+    ]
+)
 
 def auto_type(text_widget):
-    """Simulates typing with optimized speed using pynput."""
-    global is_typing, current_position, min_wpm, max_wpm
+    """Simulates typing with human-like speed variation based on code patterns."""
+    global is_typing, current_position, min_wpm, max_wpm, pattern_matcher
     text = text_widget.get("1.0", tk.END).strip()  # Get text from the text widget
+    
+    logging.info(f"Starting auto-type with min_wpm={min_wpm}, max_wpm={max_wpm}, language={pattern_matcher.language}")
+    
     while current_position < len(text):
         if not is_typing:
             break
-        keyboard.type(text[current_position])  # Type the current character
-        current_position += 1  # Move to the next character
-
-        # WPM delay: Convert WPM to delay per character (5 characters per word)
-        delay = 60 / (random.uniform(min_wpm, max_wpm) * 5)
-        time.sleep(delay)
+        
+        # Check if we're at the start of a known pattern
+        pattern_info = pattern_matcher.find_pattern_at_position(text, current_position)
+        
+        if pattern_info:
+            # Found a pattern - apply pause before if needed
+            if pattern_info['pause_before'] > 0:
+                logging.debug(f"Pause before pattern '{pattern_info['matched_text']}': {pattern_info['pause_before']}s")
+                time.sleep(pattern_info['pause_before'])
+            
+            # Type each character of the pattern with adjusted speed
+            pattern_length = pattern_info['length']
+            base_delay = 60 / (random.uniform(min_wpm, max_wpm) * 5)
+            adjusted_delay = base_delay / pattern_info['speed_multiplier']
+            
+            logging.info(f"Typing pattern '{pattern_info['matched_text']}' (category: {pattern_info['category']}) "
+                        f"with speed_multiplier={pattern_info['speed_multiplier']:.2f}, "
+                        f"delay={adjusted_delay:.4f}s per char")
+            
+            for i in range(pattern_length):
+                if not is_typing:
+                    break
+                keyboard.type(text[current_position])
+                current_position += 1
+                if i < pattern_length - 1:  # Don't delay after the last character
+                    time.sleep(adjusted_delay)
+            
+            # Apply pause after if needed
+            if pattern_info['pause_after'] > 0:
+                logging.debug(f"Pause after pattern '{pattern_info['matched_text']}': {pattern_info['pause_after']}s")
+                time.sleep(pattern_info['pause_after'])
+        else:
+            # No pattern match - use default speed
+            keyboard.type(text[current_position])
+            current_position += 1
+            
+            # WPM delay: Convert WPM to delay per character (5 characters per word)
+            delay = 60 / (random.uniform(min_wpm, max_wpm) * 5)
+            time.sleep(delay)
 
 def start_typing(text_widget, min_wpm_input, max_wpm_input):
     """Starts the typing process."""
@@ -97,7 +146,10 @@ def update_status(message):
 
 def on_language_change(*args):
     """Handle manual language selection change."""
+    global pattern_matcher
     selected_language = language_var.get()
+    pattern_matcher.set_language(selected_language)
+    logging.info(f"Language changed to: {selected_language}")
     update_status(f"Language set to: {selected_language}")
 
 # Create the GUI
