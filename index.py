@@ -95,6 +95,11 @@ def update_status(message):
     """Updates the status label."""
     status_label.config(text=message)
 
+def on_language_change(*args):
+    """Handle manual language selection change."""
+    selected_language = language_var.get()
+    update_status(f"Language set to: {selected_language}")
+
 # Create the GUI
 root = tk.Tk()
 root.title("Auto Typing Tool")
@@ -103,12 +108,12 @@ root.title("Auto Typing Tool")
 tk.Label(root, text="Min WPM:").grid(row=0, column=0, padx=10, pady=5, sticky="e")
 min_wpm_input = tk.Entry(root, width=10)
 min_wpm_input.grid(row=0, column=1, padx=10, pady=5)
-min_wpm_input.insert(0, "40")
+min_wpm_input.insert(0, "100")
 
 tk.Label(root, text="Max WPM:").grid(row=0, column=2, padx=10, pady=5, sticky="e")
 max_wpm_input = tk.Entry(root, width=10)
 max_wpm_input.grid(row=0, column=3, padx=10, pady=5)
-max_wpm_input.insert(0, "60")
+max_wpm_input.insert(0, "250")
 
 # Text Area for Main Text
 tk.Label(root, text="Main Text:").grid(row=1, column=0, columnspan=4, padx=10, pady=5)
@@ -122,29 +127,54 @@ def focus_handler(event):
 # Bind text widget focus to mouse click
 text_widget.bind("<FocusIn>", focus_handler)
 
+# Language Selection
+language_frame = tk.Frame(root)
+language_frame.grid(row=3, column=0, columnspan=4, padx=10, pady=(5, 0), sticky="w")
+
+tk.Label(language_frame, text="Language:").pack(side=tk.LEFT, padx=(0, 5))
+
+language_var = tk.StringVar(value="Java")
+language_dropdown = tk.OptionMenu(
+    language_frame, 
+    language_var,
+    "Java",
+    "JavaScript", 
+    "TypeScript",
+    "React",
+    "CSS",
+    "Python",
+    "C++",
+    "C#"
+)
+language_dropdown.config(width=12)
+language_dropdown.pack(side=tk.LEFT)
+
+# Bind language change event
+language_var.trace_add('write', on_language_change)
+
 # Buttons
 start_button = tk.Button(
     root, text="Start", command=lambda: start_typing(text_widget, min_wpm_input, max_wpm_input)
 )
-start_button.grid(row=3, column=0, padx=10, pady=10)
+start_button.grid(row=4, column=0, padx=10, pady=10)
 
 pause_button = tk.Button(root, text="Pause", command=pause_typing)
-pause_button.grid(row=3, column=1, padx=10, pady=10)
+pause_button.grid(row=4, column=1, padx=10, pady=10)
 
 continue_button = tk.Button(root, text="Continue", command=continue_typing)
-continue_button.grid(row=3, column=2, padx=10, pady=10)
+continue_button.grid(row=4, column=2, padx=10, pady=10)
 
 stop_button = tk.Button(root, text="Stop", command=stop_typing)
-stop_button.grid(row=3, column=3, padx=10, pady=10)
+stop_button.grid(row=4, column=3, padx=10, pady=10)
 
 increase_speed_button = tk.Button(
     root, text="Increase Speed", command=lambda: increase_speed(min_wpm_input, max_wpm_input)
 )
-increase_speed_button.grid(row=4, column=1, columnspan=2, padx=10, pady=10)
+increase_speed_button.grid(row=5, column=1, columnspan=2, padx=10, pady=10)
 
 # Status Label
 status_label = tk.Label(root, text="Status: Ready", fg="blue")
-status_label.grid(row=5, column=0, columnspan=4, padx=10, pady=10)
+status_label.grid(row=6, column=0, columnspan=4, padx=10, pady=10)
 
 # Run the GUI
 root.mainloop()
