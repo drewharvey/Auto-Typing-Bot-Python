@@ -173,7 +173,7 @@ def main():
         print("*" * 70)
         print("\nThe pattern matcher is working correctly.")
         print("Patterns are detected and appropriate speed multipliers are applied.")
-        print("\nLog file will be created at: /tmp/auto_typing_debug.log")
+        print("\nLog file will be created in your system's temp directory as 'auto_typing_debug.log'")
         print("when the GUI application is run.")
         
         return 0

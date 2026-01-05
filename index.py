@@ -5,6 +5,8 @@ import threading
 import random
 import time
 import logging
+import tempfile
+import os
 from pattern_matcher import PatternMatcher
 
 # Globals
@@ -17,14 +19,16 @@ keyboard = Controller()
 pattern_matcher = PatternMatcher('java')  # Default to Java
 
 # Configure logging
+log_file = os.path.join(tempfile.gettempdir(), 'auto_typing_debug.log')
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('/tmp/auto_typing_debug.log'),
+        logging.FileHandler(log_file),
         logging.StreamHandler()
     ]
 )
+logging.info(f"Log file: {log_file}")
 
 def auto_type(text_widget):
     """Simulates typing with human-like speed variation based on code patterns."""

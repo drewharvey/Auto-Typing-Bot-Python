@@ -34,6 +34,10 @@ class PatternMatcher:
             pause_after = category_data.get('pause_after', 0)
             
             for pattern in patterns:
+                # Skip empty patterns
+                if not pattern:
+                    continue
+                    
                 # Escape special regex characters and create word boundary pattern
                 escaped_pattern = re.escape(pattern)
                 # Use word boundaries for alphanumeric patterns, exact match for symbols

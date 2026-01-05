@@ -105,7 +105,7 @@ This will launch the graphical interface where you can configure typing paramete
   - Bracket pairs (e.g., `{}`, `[]`, `()`, `<>`) - 3.0x faster
   - Operators and punctuation - Variable speeds with natural pauses
   - Custom identifiers - Base typing speed
-- **Logging**: Debug logs available at `/tmp/auto_typing_debug.log` for troubleshooting.
+- **Logging**: Debug logs saved to `auto_typing_debug.log` in your system's temp directory for troubleshooting.
 
 ## Why Choose This Auto Typing Tool?
 
