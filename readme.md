@@ -32,6 +32,13 @@ Welcome to the **Auto Typing Tool**, an advanced, fast, and optimized solution f
 - **Stop**: Stop and reset the progress at any time.
 - **Ignore leading whitespace**: Toggle to skip leading spaces/tabs at the beginning of lines (useful for IDEs with auto-indent)
 
+### ⏸️ Pause Directives
+- Insert pauses directly in your text using `{{PAUSE:X}}` syntax
+- `X` is the duration in seconds (supports decimals)
+- Pause directives are executed but **not typed** in the output
+- Maximum pause duration: 60 seconds
+- Uses double curly braces to avoid conflicts with Java/code syntax
+
 ### 🧠 Intelligent Design
 - Handles large text inputs effortlessly.
 - Dynamically calculates delay per character for optimized performance.
@@ -95,10 +102,14 @@ This will launch the graphical interface where you can configure typing paramete
    - Useful for IntelliJ IDEA, VS Code, PyCharm, and other IDEs with auto-indent features.
 5. **Input Text**:
    - Paste or type your target text (e.g., Java code) in the **Main Text** field.
-6. **Start Typing**:
+6. **Add Pauses** (optional):
+   - Insert `{{PAUSE:X}}` anywhere in your text to add a pause of X seconds.
+   - Example: `System.out.println("Hello");{{PAUSE:2}}` pauses for 2 seconds after typing.
+   - The pause directive itself is not typed—only the pause is executed.
+7. **Start Typing**:
    - Click the **Start** button to begin the auto typing process.
    - The tool will vary typing speed based on detected code patterns for a more realistic experience.
-7. **Control Typing**:
+8. **Control Typing**:
    - Use the **Pause**, **Continue**, and **Stop** buttons to control the operation.
 8. **Boost Speed**:
    - Click the **Increase Speed** button to raise the typing speed by 1.5x instantly.
@@ -115,6 +126,7 @@ This will launch the graphical interface where you can configure typing paramete
 | **Increase Speed**    | Dynamically increases typing speed by 1.5x, updating WPM values.           |
 | **Language Selection**| Choose programming language for optimized pattern-based typing.            |
 | **Pattern Recognition**| Automatically detects code patterns and adjusts typing speed accordingly.  |
+| **Pause Directives**  | Insert `{{PAUSE:X}}` in text to pause for X seconds during typing.         |
 | **Ignore Leading Whitespace**| Skips leading spaces/tabs at line starts to prevent duplicate indentation in IDEs. |
 | **GUI Interaction**   | Intuitive interface for configuring and controlling the auto typing bot.   |
 
@@ -124,6 +136,7 @@ This will launch the graphical interface where you can configure typing paramete
 - **Frameworks**: Tkinter for GUI, Pynput for keyboard simulation.
 - **Pattern Recognition**: Custom pattern matcher for language-specific code patterns.
 - **Threading**: Ensures seamless typing without freezing the interface.
+- **Pause Directives**: `{{PAUSE:X}}` syntax for inserting custom pauses (0-60 seconds).
 - **Intelligent Speed Variation**: Applies different typing speeds based on:
   - Keywords (e.g., `public`, `class`, `int`) - 1.8x faster
   - Boilerplate code (e.g., `System.out.println`, `public static void main`) - 2.0x faster
