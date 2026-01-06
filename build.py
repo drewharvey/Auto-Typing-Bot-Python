@@ -43,9 +43,14 @@ def build_app():
         # Run PyInstaller command
         cmd = [
             pyinstaller_cmd,
-            "--onefile",
+            "--onedir",
             "--windowed", 
             "--name", "Auto-Typing-Tool",
+            "--paths=src",
+            "--hidden-import=pattern_matcher",
+            "--hidden-import=pause_directive",
+            "--hidden-import=help_window",
+            "--hidden-import=code_patterns",
             "src/main.py"
         ]
         
