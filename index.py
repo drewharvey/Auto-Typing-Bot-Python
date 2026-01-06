@@ -39,7 +39,13 @@ def auto_type(text_widget):
     logging.info(f"Starting auto-type with min_wpm={min_wpm}, max_wpm={max_wpm}, language={pattern_matcher.language}, ignore_leading_whitespace={ignore_leading_whitespace}")
     
     # Track if we're at the beginning of a line
+    # When resuming, check if we're actually at line start based on current position
     at_line_start = True
+    if current_position > 0:
+        # Look backwards to find if we're at the start of a line
+        # We're at line start only if the previous character was a newline
+        # or if we're at position 0
+        at_line_start = (text[current_position - 1] == '\n')
     
     while current_position < len(text):
         if not is_typing:
