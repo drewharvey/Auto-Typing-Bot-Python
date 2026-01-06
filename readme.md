@@ -29,6 +29,7 @@ Welcome to the **Auto Typing Tool**, an advanced, fast, and optimized solution f
 - **Pause**: Temporarily halt the typing process.
 - **Continue**: Resume typing seamlessly.
 - **Stop**: Stop and reset the progress at any time.
+- **Ignore leading whitespace**: Toggle to skip leading spaces/tabs at the beginning of lines (useful for IDEs with auto-indent)
 
 ### 🧠 Intelligent Design
 - Handles large text inputs effortlessly.
@@ -70,14 +71,18 @@ This will launch the graphical interface where you can configure typing paramete
 2. **Select Language**:
    - Choose your programming language from the dropdown (Java, JavaScript, TypeScript, React, CSS, Python, C++, C#).
    - The tool will automatically apply human-like speed variations based on language-specific patterns.
-3. **Input Text**:
+3. **Configure Whitespace Handling** (optional):
+   - Check **"Ignore leading whitespace"** if typing into an IDE that automatically adds indentation.
+   - This prevents duplicate indentation by skipping spaces/tabs at the beginning of lines.
+   - Useful for IntelliJ IDEA, VS Code, PyCharm, and other IDEs with auto-indent features.
+4. **Input Text**:
    - Paste or type your target text (e.g., Java code) in the **Main Text** field.
-4. **Start Typing**:
+5. **Start Typing**:
    - Click the **Start** button to begin the auto typing process.
    - The tool will vary typing speed based on detected code patterns for a more realistic experience.
-5. **Control Typing**:
+6. **Control Typing**:
    - Use the **Pause**, **Continue**, and **Stop** buttons to control the operation.
-6. **Boost Speed**:
+7. **Boost Speed**:
    - Click the **Increase Speed** button to raise the typing speed by 1.5x instantly.
 
 ## System Functionalities
@@ -91,6 +96,7 @@ This will launch the graphical interface where you can configure typing paramete
 | **Increase Speed**    | Dynamically increases typing speed by 1.5x, updating WPM values.           |
 | **Language Selection**| Choose programming language for optimized pattern-based typing.            |
 | **Pattern Recognition**| Automatically detects code patterns and adjusts typing speed accordingly.  |
+| **Ignore Leading Whitespace**| Skips leading spaces/tabs at line starts to prevent duplicate indentation in IDEs. |
 | **GUI Interaction**   | Intuitive interface for configuring and controlling the auto typing bot.   |
 
 ## Technical Details
@@ -126,9 +132,9 @@ This project is licensed under the MIT License. You’re free to use, modify, an
 Download, run, and experience the fastest and best **Auto Typing Bot** built with Python today!
 
 
-## Testing the Feature
+## Testing the Features
 
-You can test the pattern-based typing feature without running the GUI:
+You can test the features without running the GUI:
 
 ```bash
 # Run the pattern detection test
@@ -136,6 +142,15 @@ python3 test_pattern_typing.py
 
 # Run the typing speed demonstration
 python3 demo_typing_speed.py
+
+# Test the whitespace ignore feature
+python3 test_whitespace_ignore.py
+
+# Demonstrate the whitespace ignore feature
+python3 demo_whitespace_feature.py
+
+# Test resume functionality with whitespace handling
+python3 test_resume_whitespace.py
 ```
 
 These scripts will show you how the tool detects code patterns and applies speed variations.
