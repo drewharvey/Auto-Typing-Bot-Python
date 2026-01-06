@@ -10,9 +10,9 @@ from tkinter import messagebox
 
 # Help text sections
 _PAUSE_FEATURE_INFO = """
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+------------------------
 PAUSE DIRECTIVE FEATURE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+------------------------
 
 Add pauses during typing using the {{PAUSE:X}} syntax:
 
@@ -22,20 +22,18 @@ Add pauses during typing using the {{PAUSE:X}} syntax:
 
 • The pause directive is executed but NOT typed
 • Maximum pause duration: 60 seconds
-• Syntax uses double curly braces (won't conflict with Java)
 
 Example in code:
-  public static void main(String[] args) {
-      {{PAUSE:2}}
-      System.out.println("After 2 second pause");
-  }
+var x = 5;
+{{PAUSE:2}}
+System.out.println("After 2 second pause");
 """
 
 _MACOS_HELP = """AUTO TYPING TOOL - HELP
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+--------------------------
 macOS ACCESSIBILITY SETUP
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+--------------------------
 
 For the Auto Typing Tool to work on macOS, you need to grant accessibility permissions:
 
@@ -53,9 +51,9 @@ Note: You may need to restart the application after granting permissions.
 
 _OTHER_PLATFORM_HELP = """AUTO TYPING TOOL - HELP
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+------------------
 SETUP INFORMATION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+------------------
 
 This tool uses keyboard automation to simulate typing.
 
@@ -66,20 +64,11 @@ macOS Users:
 
 Linux Users:
 • Should work without special permissions
-• Ensure pynput is installed (pip install pynput)
 
 Windows Users:
 • Should work without special permissions
 • Some antivirus software may require approval
-""" + _PAUSE_FEATURE_INFO + """
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-TROUBLESHOOTING
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-If you encounter issues, check that:
-• pynput library is installed
-• You have proper keyboard control permissions
-• No other application is blocking keyboard input"""
+""" + _PAUSE_FEATURE_INFO
 
 
 class HelpWindow:
