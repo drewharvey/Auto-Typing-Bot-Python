@@ -14,8 +14,8 @@ def build_app():
     print("🔨 Building Auto Typing Tool...")
     
     # Check if we're in the right directory
-    if not os.path.exists("index.py"):
-        print("❌ Error: index.py not found. Make sure you're in the project directory.")
+    if not os.path.exists("src/main.py"):
+        print("❌ Error: src/main.py not found. Make sure you're in the project directory.")
         sys.exit(1)
     
     # Use the virtual environment's pyinstaller if available
@@ -46,7 +46,7 @@ def build_app():
             "--onefile",
             "--windowed", 
             "--name", "Auto-Typing-Tool",
-            "index.py"
+            "src/main.py"
         ]
         
         print(f"⚡ Running: {' '.join(cmd)}")
@@ -103,7 +103,8 @@ def main():
     print(f"📁 Working directory: {os.getcwd()}")
     
     # Check for required files
-    required_files = ["index.py"]
+    required_files = ["src/main.py"]
+    print(f"📁 required files: {required_files}")
     missing_files = [f for f in required_files if not os.path.exists(f)]
     
     if missing_files:
