@@ -17,6 +17,7 @@ max_wpm = 60
 typing_thread = None
 keyboard = Controller()
 pattern_matcher = PatternMatcher('java')  # Default to Java
+ignore_leading_whitespace = False  # Toggle for ignoring leading whitespace
 
 # Configure logging
 log_file = os.path.join(tempfile.gettempdir(), 'auto_typing_debug.log')
@@ -32,14 +33,31 @@ logging.info(f"Log file: {log_file}")
 
 def auto_type(text_widget):
     """Simulates typing with human-like speed variation based on code patterns."""
-    global is_typing, current_position, min_wpm, max_wpm, pattern_matcher
+    global is_typing, current_position, min_wpm, max_wpm, pattern_matcher, ignore_leading_whitespace
     text = text_widget.get("1.0", tk.END).strip()  # Get text from the text widget
     
-    logging.info(f"Starting auto-type with min_wpm={min_wpm}, max_wpm={max_wpm}, language={pattern_matcher.language}")
+    logging.info(f"Starting auto-type with min_wpm={min_wpm}, max_wpm={max_wpm}, language={pattern_matcher.language}, ignore_leading_whitespace={ignore_leading_whitespace}")
+    
+    # Track if we're at the beginning of a line
+    at_line_start = True
     
     while current_position < len(text):
         if not is_typing:
             break
+        
+        current_char = text[current_position]
+        
+        # Check if we should skip leading whitespace
+        if ignore_leading_whitespace and at_line_start and current_char in ' \t':
+            logging.debug(f"Skipping leading whitespace at position {current_position}")
+            current_position += 1
+            continue
+        
+        # Update line start tracking
+        if current_char == '\n':
+            at_line_start = True
+        elif current_char not in ' \t':
+            at_line_start = False
         
         # Check if we're at the start of a known pattern
         pattern_info = pattern_matcher.find_pattern_at_position(text, current_position)
@@ -156,6 +174,14 @@ def on_language_change(*args):
     logging.info(f"Language changed to: {selected_language}")
     update_status(f"Language set to: {selected_language}")
 
+def on_whitespace_toggle():
+    """Handle toggle of the ignore leading whitespace checkbox."""
+    global ignore_leading_whitespace
+    ignore_leading_whitespace = whitespace_var.get()
+    logging.info(f"Ignore leading whitespace: {ignore_leading_whitespace}")
+    status = "enabled" if ignore_leading_whitespace else "disabled"
+    update_status(f"Ignore leading whitespace {status}")
+
 # Create the GUI
 root = tk.Tk()
 root.title("Auto Typing Tool")
@@ -208,29 +234,39 @@ language_dropdown.pack(side=tk.LEFT)
 # Bind language change event
 language_var.trace_add('write', on_language_change)
 
+# Ignore Leading Whitespace Checkbox
+whitespace_var = tk.BooleanVar(value=False)
+whitespace_checkbox = tk.Checkbutton(
+    root,
+    text="Ignore leading whitespace (for IDE auto-indent)",
+    variable=whitespace_var,
+    command=on_whitespace_toggle
+)
+whitespace_checkbox.grid(row=4, column=0, columnspan=4, padx=10, pady=(5, 0), sticky="w")
+
 # Buttons
 start_button = tk.Button(
     root, text="Start", command=lambda: start_typing(text_widget, min_wpm_input, max_wpm_input)
 )
-start_button.grid(row=4, column=0, padx=10, pady=10)
+start_button.grid(row=5, column=0, padx=10, pady=10)
 
 pause_button = tk.Button(root, text="Pause", command=pause_typing)
-pause_button.grid(row=4, column=1, padx=10, pady=10)
+pause_button.grid(row=5, column=1, padx=10, pady=10)
 
 continue_button = tk.Button(root, text="Continue", command=continue_typing)
-continue_button.grid(row=4, column=2, padx=10, pady=10)
+continue_button.grid(row=5, column=2, padx=10, pady=10)
 
 stop_button = tk.Button(root, text="Stop", command=stop_typing)
-stop_button.grid(row=4, column=3, padx=10, pady=10)
+stop_button.grid(row=5, column=3, padx=10, pady=10)
 
 increase_speed_button = tk.Button(
     root, text="Increase Speed", command=lambda: increase_speed(min_wpm_input, max_wpm_input)
 )
-increase_speed_button.grid(row=5, column=1, columnspan=2, padx=10, pady=10)
+increase_speed_button.grid(row=6, column=1, columnspan=2, padx=10, pady=10)
 
 # Status Label
 status_label = tk.Label(root, text="Status: Ready", fg="blue")
-status_label.grid(row=6, column=0, columnspan=4, padx=10, pady=10)
+status_label.grid(row=7, column=0, columnspan=4, padx=10, pady=10)
 
 # Run the GUI
 root.mainloop()
