@@ -215,14 +215,41 @@ def on_whitespace_toggle():
     update_status(f"Ignore leading whitespace {status}")
 
 def show_help_info():
-    """Display help information popup with accessibility setup instructions."""
+    """Display help information popup with accessibility setup instructions and features."""
     system = platform.system()
     
     # Build the help message
-    title = "Setup Information"
+    title = "Auto Typing Tool - Help"
     
+    # Pause directive feature documentation
+    pause_feature_info = """
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PAUSE DIRECTIVE FEATURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Add pauses during typing using the {{PAUSE:X}} syntax:
+
+  {{PAUSE:2}}       Pause for 2 seconds
+  {{PAUSE:0.5}}     Pause for 0.5 seconds
+  {{PAUSE:10}}      Pause for 10 seconds
+
+• The pause directive is executed but NOT typed
+• Maximum pause duration: 60 seconds
+• Syntax uses double curly braces (won't conflict with Java)
+
+Example in code:
+  public static void main(String[] args) {
+      {{PAUSE:2}}
+      System.out.println("After 2 second pause");
+  }
+"""
+
     if system == "Darwin":  # macOS
-        message = """macOS Accessibility Setup Required
+        message = """AUTO TYPING TOOL - HELP
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+macOS ACCESSIBILITY SETUP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 For the Auto Typing Tool to work on macOS, you need to grant accessibility permissions:
 
@@ -236,32 +263,36 @@ For the Auto Typing Tool to work on macOS, you need to grant accessibility permi
 8. If not in the list, click the '+' button and add it
 
 Note: You may need to restart the application after granting permissions.
-
-Alternative path:
-System Settings → Privacy & Security → Accessibility → Add Python/Auto-Typing-Tool
-
-For more help, check your macOS version's documentation on accessibility permissions."""
+""" + pause_feature_info
     else:
-        message = """Auto Typing Tool - Setup Information
+        message = """AUTO TYPING TOOL - HELP
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SETUP INFORMATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 This tool uses keyboard automation to simulate typing.
 
 macOS Users:
-• You need to enable accessibility permissions
+• Enable accessibility permissions
 • Go to: System Settings → Privacy & Security → Accessibility
-• Add Python or Auto-Typing-Tool to the allowed applications
+• Add Python or Auto-Typing-Tool to allowed applications
 
 Linux Users:
-• The tool should work without special permissions
-• If you have issues, ensure pynput is properly installed
+• Should work without special permissions
+• Ensure pynput is installed (pip install pynput)
 
 Windows Users:
-• The tool should work without special permissions
+• Should work without special permissions
 • Some antivirus software may require approval
+""" + pause_feature_info + """
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-If you encounter any issues, please check that:
-• pynput library is installed (pip install pynput)
-• You have proper permissions to control the keyboard
+If you encounter issues, check that:
+• pynput library is installed
+• You have proper keyboard control permissions
 • No other application is blocking keyboard input"""
     
     messagebox.showinfo(title, message)
