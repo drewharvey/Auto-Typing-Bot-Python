@@ -23,6 +23,7 @@ Welcome to the **Auto Typing Tool**, an advanced, fast, and optimized solution f
 - Editable input fields for custom text and speed control.
 - Real-time status updates for better usability.
 - Language selection dropdown to optimize typing for specific programming languages
+- **Help button** with setup instructions for accessibility permissions (especially for macOS users)
 
 ### 🔄 Typing Controls
 - **Start**: Begin typing with your configured speed.
@@ -52,6 +53,21 @@ You can install the `pynput` library using pip:
 pip install pynput
 ```
 
+#### macOS Users - Important Setup Step
+On macOS, you need to grant accessibility permissions for the app to simulate keyboard input:
+
+1. Open **System Settings** (or **System Preferences** on older versions)
+2. Navigate to **Privacy & Security**
+3. Click on **Accessibility**
+4. Click the lock icon (🔒) to make changes
+5. Enter your password when prompted
+6. Find **Python** or **Auto-Typing-Tool** in the list and enable it
+7. If not listed, click the **+** button and add the application
+
+You can also click the **ℹ️ Help** button in the application for detailed setup instructions.
+
+**Note:** You may need to restart the application after granting permissions.
+
 ### Installation
 1. Clone the repository or download the script.
 2. Save the file as `auto_typing_tool.py`.
@@ -66,29 +82,32 @@ This will launch the graphical interface where you can configure typing paramete
 
 ## How to Use
 
-1. **Set Typing Speed**:
+1. **Get Help (if needed)**:
+   - Click the **ℹ️ Help** button to view setup instructions, especially for macOS accessibility permissions.
+2. **Set Typing Speed**:
    - Enter desired values for **Min WPM** and **Max WPM** in the input fields.
-2. **Select Language**:
+3. **Select Language**:
    - Choose your programming language from the dropdown (Java, JavaScript, TypeScript, React, CSS, Python, C++, C#).
    - The tool will automatically apply human-like speed variations based on language-specific patterns.
-3. **Configure Whitespace Handling** (optional):
+4. **Configure Whitespace Handling** (optional):
    - Check **"Ignore leading whitespace"** if typing into an IDE that automatically adds indentation.
    - This prevents duplicate indentation by skipping spaces/tabs at the beginning of lines.
    - Useful for IntelliJ IDEA, VS Code, PyCharm, and other IDEs with auto-indent features.
-4. **Input Text**:
+5. **Input Text**:
    - Paste or type your target text (e.g., Java code) in the **Main Text** field.
-5. **Start Typing**:
+6. **Start Typing**:
    - Click the **Start** button to begin the auto typing process.
    - The tool will vary typing speed based on detected code patterns for a more realistic experience.
-6. **Control Typing**:
+7. **Control Typing**:
    - Use the **Pause**, **Continue**, and **Stop** buttons to control the operation.
-7. **Boost Speed**:
+8. **Boost Speed**:
    - Click the **Increase Speed** button to raise the typing speed by 1.5x instantly.
 
 ## System Functionalities
 
 | Functionality         | Description                                                                 |
 |-----------------------|-----------------------------------------------------------------------------|
+| **Help Button**       | Displays setup instructions, including macOS accessibility permissions.    |
 | **Start Typing**      | Begins typing the text at the configured speed with human-like variations. |
 | **Pause Typing**      | Pauses the typing process temporarily.                                     |
 | **Continue Typing**   | Resumes typing from where it was paused.                                   |

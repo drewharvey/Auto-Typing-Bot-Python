@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import scrolledtext
+from tkinter import scrolledtext, messagebox
 from pynput.keyboard import Controller
 import threading
 import random
@@ -7,6 +7,7 @@ import time
 import logging
 import tempfile
 import os
+import platform
 from pattern_matcher import PatternMatcher
 
 # Globals
@@ -199,9 +200,71 @@ def on_whitespace_toggle():
     status = "enabled" if ignore_leading_whitespace else "disabled"
     update_status(f"Ignore leading whitespace {status}")
 
+def show_help_info():
+    """Display help information popup with accessibility setup instructions."""
+    system = platform.system()
+    
+    # Build the help message
+    title = "Setup Information"
+    
+    if system == "Darwin":  # macOS
+        message = """macOS Accessibility Setup Required
+
+For the Auto Typing Tool to work on macOS, you need to grant accessibility permissions:
+
+1. Open System Settings (or System Preferences)
+2. Navigate to Privacy & Security
+3. Click on Accessibility
+4. Click the lock icon (🔒) to make changes
+5. Enter your password if prompted
+6. Find "Python" or "Auto-Typing-Tool" in the list
+7. Enable the checkbox next to it
+8. If not in the list, click the '+' button and add it
+
+Note: You may need to restart the application after granting permissions.
+
+Alternative path:
+System Settings → Privacy & Security → Accessibility → Add Python/Auto-Typing-Tool
+
+For more help, check your macOS version's documentation on accessibility permissions."""
+    else:
+        message = """Auto Typing Tool - Setup Information
+
+This tool uses keyboard automation to simulate typing.
+
+macOS Users:
+• You need to enable accessibility permissions
+• Go to: System Settings → Privacy & Security → Accessibility
+• Add Python or Auto-Typing-Tool to the allowed applications
+
+Linux Users:
+• The tool should work without special permissions
+• If you have issues, ensure pynput is properly installed
+
+Windows Users:
+• The tool should work without special permissions
+• Some antivirus software may require approval
+
+If you encounter any issues, please check that:
+• pynput library is installed (pip install pynput)
+• You have proper permissions to control the keyboard
+• No other application is blocking keyboard input"""
+    
+    messagebox.showinfo(title, message)
+
 # Create the GUI
 root = tk.Tk()
 root.title("Auto Typing Tool")
+
+# Help/Info button - placed at top right
+help_button = tk.Button(
+    root, 
+    text="ℹ️ Help",
+    command=show_help_info,
+    relief=tk.RAISED,
+    borderwidth=1
+)
+help_button.grid(row=0, column=4, padx=10, pady=5, sticky="e")
 
 # Min WPM and Max WPM Inputs
 tk.Label(root, text="Min WPM:").grid(row=0, column=0, padx=10, pady=5, sticky="e")
