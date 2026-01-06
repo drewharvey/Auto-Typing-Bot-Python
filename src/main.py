@@ -16,7 +16,6 @@ DEFAULT_START_DELAY = 3  # Seconds to wait before starting typing
 DEFAULT_MIN_WPM = 100
 DEFAULT_MAX_WPM = 250
 CHARS_PER_WORD = 5  # Standard typing test assumption
-TEXT_WIDGET_WIDTH = 50
 TEXT_WIDGET_HEIGHT = 15
 LANGUAGE_DROPDOWN_WIDTH = 12
 
@@ -210,49 +209,21 @@ def on_whitespace_toggle():
 # Create the GUI
 root = tk.Tk()
 root.title("Auto Typing Tool")
+root.minsize(600, 400)
 
-# Help/Info button - placed at top right
-help_button = tk.Button(
-    root, 
-    text="ℹ️ Help",
-    command=HelpWindow.open,
-    relief=tk.RAISED,
-    borderwidth=1
-)
-help_button.grid(row=0, column=4, padx=10, pady=5, sticky="e")
+# Configure grid weights for responsive layout
+root.columnconfigure(0, weight=1)
+root.rowconfigure(3, weight=1)  # Text area row expands
 
-# Min WPM and Max WPM Inputs
-tk.Label(root, text="Min WPM:").grid(row=0, column=0, padx=10, pady=5, sticky="e")
-min_wpm_input = tk.Entry(root, width=10)
-min_wpm_input.grid(row=0, column=1, padx=10, pady=5)
-min_wpm_input.insert(0, min_wpm)
+# Row 0: Language select + ignore whitespace checkbox + help button
+options_frame = tk.Frame(root)
+options_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=5)
 
-tk.Label(root, text="Max WPM:").grid(row=0, column=2, padx=10, pady=5, sticky="e")
-max_wpm_input = tk.Entry(root, width=10)
-max_wpm_input.grid(row=0, column=3, padx=10, pady=5)
-max_wpm_input.insert(0, max_wpm)
-
-# Text Area for Main Text
-tk.Label(root, text="Main Text:").grid(row=1, column=0, columnspan=4, padx=10, pady=5)
-text_widget = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=TEXT_WIDGET_WIDTH, height=TEXT_WIDGET_HEIGHT)
-text_widget.grid(row=2, column=0, columnspan=4, padx=10, pady=5)
-
-def focus_handler(event):
-    """Ensure editor field gets focus only when explicitly clicked."""
-    event.widget.focus_set()
-
-# Bind text widget focus to mouse click
-text_widget.bind("<FocusIn>", focus_handler)
-
-# Language Selection
-language_frame = tk.Frame(root)
-language_frame.grid(row=3, column=0, columnspan=4, padx=10, pady=(5, 0), sticky="w")
-
-tk.Label(language_frame, text="Language:").pack(side=tk.LEFT, padx=(0, 5))
+tk.Label(options_frame, text="Language:").pack(side=tk.LEFT, padx=(0, 5))
 
 language_var = tk.StringVar(value="Java")
 language_dropdown = tk.OptionMenu(
-    language_frame, 
+    options_frame, 
     language_var,
     "Java",
     "JavaScript", 
@@ -269,34 +240,73 @@ language_dropdown.pack(side=tk.LEFT)
 # Bind language change event
 language_var.trace_add('write', on_language_change)
 
-# Ignore Leading Whitespace Checkbox
 whitespace_var = tk.BooleanVar(value=False)
 whitespace_checkbox = tk.Checkbutton(
-    root,
-    text="Ignore leading whitespace (for IDE auto-indent)",
+    options_frame,
+    text="Ignore leading whitespace",
     variable=whitespace_var,
     command=on_whitespace_toggle
 )
-whitespace_checkbox.grid(row=4, column=0, columnspan=4, padx=10, pady=(5, 0), sticky="w")
+whitespace_checkbox.pack(side=tk.LEFT, padx=(20, 0))
 
-# Buttons
-start_button = tk.Button(
-    root, text="Start", command=lambda: start_typing(text_widget, min_wpm_input, max_wpm_input)
+help_button = tk.Button(
+    options_frame, 
+    text="ℹ️ Help",
+    command=HelpWindow.open,
+    relief=tk.RAISED,
+    borderwidth=1
 )
-start_button.grid(row=5, column=0, padx=10, pady=10)
+help_button.pack(side=tk.RIGHT)
 
-pause_button = tk.Button(root, text="Pause", command=pause_typing)
-pause_button.grid(row=5, column=1, padx=10, pady=10)
+# Row 1: WPM inputs
+wpm_frame = tk.Frame(root)
+wpm_frame.grid(row=1, column=0, sticky="ew", padx=10, pady=5)
 
-continue_button = tk.Button(root, text="Continue", command=continue_typing)
-continue_button.grid(row=5, column=2, padx=10, pady=10)
+tk.Label(wpm_frame, text="Min WPM:").pack(side=tk.LEFT, padx=(0, 5))
+min_wpm_input = tk.Entry(wpm_frame, width=10)
+min_wpm_input.pack(side=tk.LEFT)
+min_wpm_input.insert(0, min_wpm)
 
-stop_button = tk.Button(root, text="Stop", command=stop_typing)
-stop_button.grid(row=5, column=3, padx=10, pady=10)
+tk.Label(wpm_frame, text="Max WPM:").pack(side=tk.LEFT, padx=(20, 5))
+max_wpm_input = tk.Entry(wpm_frame, width=10)
+max_wpm_input.pack(side=tk.LEFT)
+max_wpm_input.insert(0, max_wpm)
 
-# Status Label
+# Row 2: "Main Text:" label
+tk.Label(root, text="Main Text:").grid(row=2, column=0, sticky="w", padx=10)
+
+# Row 3: Text area (expandable)
+text_widget = scrolledtext.ScrolledText(root, wrap=tk.WORD, height=TEXT_WIDGET_HEIGHT)
+text_widget.grid(row=3, column=0, sticky="nsew", padx=10, pady=5)
+
+def focus_handler(event):
+    """Ensure editor field gets focus only when explicitly clicked."""
+    event.widget.focus_set()
+
+# Bind text widget focus to mouse click
+text_widget.bind("<FocusIn>", focus_handler)
+
+# Row 4: Action buttons
+button_frame = tk.Frame(root)
+button_frame.grid(row=4, column=0, pady=10)
+
+start_button = tk.Button(
+    button_frame, text="Start", command=lambda: start_typing(text_widget, min_wpm_input, max_wpm_input)
+)
+start_button.pack(side=tk.LEFT, padx=5)
+
+pause_button = tk.Button(button_frame, text="Pause", command=pause_typing)
+pause_button.pack(side=tk.LEFT, padx=5)
+
+continue_button = tk.Button(button_frame, text="Continue", command=continue_typing)
+continue_button.pack(side=tk.LEFT, padx=5)
+
+stop_button = tk.Button(button_frame, text="Stop", command=stop_typing)
+stop_button.pack(side=tk.LEFT, padx=5)
+
+# Row 5: Status label
 status_label = tk.Label(root, text="Status: Ready", fg="blue")
-status_label.grid(row=7, column=0, columnspan=4, padx=10, pady=10)
+status_label.grid(row=5, column=0, padx=10, pady=(0, 10), sticky="ew")
 
 # Run the GUI
 root.mainloop()
