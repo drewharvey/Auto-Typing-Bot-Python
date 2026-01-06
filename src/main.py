@@ -15,7 +15,6 @@ from help_window import HelpWindow
 DEFAULT_START_DELAY = 3  # Seconds to wait before starting typing
 DEFAULT_MIN_WPM = 100
 DEFAULT_MAX_WPM = 250
-SPEED_INCREASE_MULTIPLIER = 1.5
 CHARS_PER_WORD = 5  # Standard typing test assumption
 TEXT_WIDGET_WIDTH = 50
 TEXT_WIDGET_HEIGHT = 15
@@ -188,22 +187,6 @@ def stop_typing():
     current_position = 0
     update_status("Typing stopped. Progress reset.")
 
-def increase_speed(min_wpm_input, max_wpm_input):
-    """Increases typing speed by multiplier."""
-    global min_wpm, max_wpm
-    try:
-        min_wpm = int(min_wpm_input.get())
-        max_wpm = int(max_wpm_input.get())
-        min_wpm = int(min_wpm * SPEED_INCREASE_MULTIPLIER)
-        max_wpm = int(max_wpm * SPEED_INCREASE_MULTIPLIER)
-        min_wpm_input.delete(0, tk.END)
-        min_wpm_input.insert(0, str(min_wpm))
-        max_wpm_input.delete(0, tk.END)
-        max_wpm_input.insert(0, str(max_wpm))
-        update_status(f"Speed increased: Min WPM = {min_wpm}, Max WPM = {max_wpm}")
-    except ValueError:
-        update_status("Please enter valid WPM values.")
-
 def update_status(message):
     """Updates the status label."""
     status_label.config(text=message)
@@ -310,11 +293,6 @@ continue_button.grid(row=5, column=2, padx=10, pady=10)
 
 stop_button = tk.Button(root, text="Stop", command=stop_typing)
 stop_button.grid(row=5, column=3, padx=10, pady=10)
-
-increase_speed_button = tk.Button(
-    root, text="Increase Speed", command=lambda: increase_speed(min_wpm_input, max_wpm_input)
-)
-increase_speed_button.grid(row=6, column=1, columnspan=2, padx=10, pady=10)
 
 # Status Label
 status_label = tk.Label(root, text="Status: Ready", fg="blue")
