@@ -11,6 +11,7 @@ import platform
 from pattern_matcher import PatternMatcher
 
 # Globals
+start_delay = 3  # Seconds to wait before starting typing
 is_typing = False
 current_position = 0
 min_wpm = 100
@@ -124,8 +125,8 @@ def start_typing(text_widget, min_wpm_input, max_wpm_input):
     try:
         min_wpm = int(min_wpm_input.get())
         max_wpm = int(max_wpm_input.get())
-        update_status("Starting in 2 seconds...")
-        time.sleep(2)  # Delay to allow focusing on another UI
+        update_status(f"Starting in {start_delay} seconds...")
+        time.sleep(start_delay)  # Delay to allow focusing on another UI
         is_typing = True
         if typing_thread is None or not typing_thread.is_alive():  # Start a new thread
             typing_thread = threading.Thread(
@@ -147,8 +148,8 @@ def continue_typing():
     """Continues the typing process."""
     global is_typing, typing_thread
     if not is_typing:
-        update_status("Continuing in 2 seconds...")
-        time.sleep(2)  # Delay to allow focusing on another UI
+        update_status(f"Continuing in {start_delay} seconds...")
+        time.sleep(start_delay)  # Delay to allow focusing on another UI
         is_typing = True
         if typing_thread is None or not typing_thread.is_alive():  # Resume the thread
             typing_thread = threading.Thread(
