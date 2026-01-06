@@ -4,6 +4,10 @@ from pynput.keyboard import Controller
 import threading
 import random
 import time
+import logging
+import tempfile
+import os
+from pattern_matcher import PatternMatcher
 
 # Globals
 is_typing = False
@@ -12,20 +16,69 @@ min_wpm = 40
 max_wpm = 60
 typing_thread = None
 keyboard = Controller()
+pattern_matcher = PatternMatcher('java')  # Default to Java
+
+# Configure logging
+log_file = os.path.join(tempfile.gettempdir(), 'auto_typing_debug.log')
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(log_file),
+        logging.StreamHandler()
+    ]
+)
+logging.info(f"Log file: {log_file}")
 
 def auto_type(text_widget):
-    """Simulates typing with optimized speed using pynput."""
-    global is_typing, current_position, min_wpm, max_wpm
+    """Simulates typing with human-like speed variation based on code patterns."""
+    global is_typing, current_position, min_wpm, max_wpm, pattern_matcher
     text = text_widget.get("1.0", tk.END).strip()  # Get text from the text widget
+    
+    logging.info(f"Starting auto-type with min_wpm={min_wpm}, max_wpm={max_wpm}, language={pattern_matcher.language}")
+    
     while current_position < len(text):
         if not is_typing:
             break
-        keyboard.type(text[current_position])  # Type the current character
-        current_position += 1  # Move to the next character
-
-        # WPM delay: Convert WPM to delay per character (5 characters per word)
-        delay = 60 / (random.uniform(min_wpm, max_wpm) * 5)
-        time.sleep(delay)
+        
+        # Check if we're at the start of a known pattern
+        pattern_info = pattern_matcher.find_pattern_at_position(text, current_position)
+        
+        if pattern_info:
+            # Found a pattern - apply pause before if needed
+            if pattern_info['pause_before'] > 0:
+                logging.debug(f"Pause before pattern '{pattern_info['matched_text']}': {pattern_info['pause_before']}s")
+                time.sleep(pattern_info['pause_before'])
+            
+            # Type each character of the pattern with adjusted speed
+            pattern_length = pattern_info['length']
+            base_delay = 60 / (random.uniform(min_wpm, max_wpm) * 5)
+            adjusted_delay = base_delay / pattern_info['speed_multiplier']
+            
+            logging.info(f"Typing pattern '{pattern_info['matched_text']}' (category: {pattern_info['category']}) "
+                        f"with speed_multiplier={pattern_info['speed_multiplier']:.2f}, "
+                        f"delay={adjusted_delay:.4f}s per char")
+            
+            for i in range(pattern_length):
+                if not is_typing:
+                    break
+                keyboard.type(text[current_position])
+                current_position += 1
+                if i < pattern_length - 1:  # Don't delay after the last character
+                    time.sleep(adjusted_delay)
+            
+            # Apply pause after if needed
+            if pattern_info['pause_after'] > 0:
+                logging.debug(f"Pause after pattern '{pattern_info['matched_text']}': {pattern_info['pause_after']}s")
+                time.sleep(pattern_info['pause_after'])
+        else:
+            # No pattern match - use default speed
+            keyboard.type(text[current_position])
+            current_position += 1
+            
+            # WPM delay: Convert WPM to delay per character (5 characters per word)
+            delay = 60 / (random.uniform(min_wpm, max_wpm) * 5)
+            time.sleep(delay)
 
 def start_typing(text_widget, min_wpm_input, max_wpm_input):
     """Starts the typing process."""
@@ -95,6 +148,14 @@ def update_status(message):
     """Updates the status label."""
     status_label.config(text=message)
 
+def on_language_change(*args):
+    """Handle manual language selection change."""
+    global pattern_matcher
+    selected_language = language_var.get()
+    pattern_matcher.set_language(selected_language)
+    logging.info(f"Language changed to: {selected_language}")
+    update_status(f"Language set to: {selected_language}")
+
 # Create the GUI
 root = tk.Tk()
 root.title("Auto Typing Tool")
@@ -103,12 +164,12 @@ root.title("Auto Typing Tool")
 tk.Label(root, text="Min WPM:").grid(row=0, column=0, padx=10, pady=5, sticky="e")
 min_wpm_input = tk.Entry(root, width=10)
 min_wpm_input.grid(row=0, column=1, padx=10, pady=5)
-min_wpm_input.insert(0, "40")
+min_wpm_input.insert(0, "100")
 
 tk.Label(root, text="Max WPM:").grid(row=0, column=2, padx=10, pady=5, sticky="e")
 max_wpm_input = tk.Entry(root, width=10)
 max_wpm_input.grid(row=0, column=3, padx=10, pady=5)
-max_wpm_input.insert(0, "60")
+max_wpm_input.insert(0, "250")
 
 # Text Area for Main Text
 tk.Label(root, text="Main Text:").grid(row=1, column=0, columnspan=4, padx=10, pady=5)
@@ -122,29 +183,54 @@ def focus_handler(event):
 # Bind text widget focus to mouse click
 text_widget.bind("<FocusIn>", focus_handler)
 
+# Language Selection
+language_frame = tk.Frame(root)
+language_frame.grid(row=3, column=0, columnspan=4, padx=10, pady=(5, 0), sticky="w")
+
+tk.Label(language_frame, text="Language:").pack(side=tk.LEFT, padx=(0, 5))
+
+language_var = tk.StringVar(value="Java")
+language_dropdown = tk.OptionMenu(
+    language_frame, 
+    language_var,
+    "Java",
+    "JavaScript", 
+    "TypeScript",
+    "React",
+    "CSS",
+    "Python",
+    "C++",
+    "C#"
+)
+language_dropdown.config(width=12)
+language_dropdown.pack(side=tk.LEFT)
+
+# Bind language change event
+language_var.trace_add('write', on_language_change)
+
 # Buttons
 start_button = tk.Button(
     root, text="Start", command=lambda: start_typing(text_widget, min_wpm_input, max_wpm_input)
 )
-start_button.grid(row=3, column=0, padx=10, pady=10)
+start_button.grid(row=4, column=0, padx=10, pady=10)
 
 pause_button = tk.Button(root, text="Pause", command=pause_typing)
-pause_button.grid(row=3, column=1, padx=10, pady=10)
+pause_button.grid(row=4, column=1, padx=10, pady=10)
 
 continue_button = tk.Button(root, text="Continue", command=continue_typing)
-continue_button.grid(row=3, column=2, padx=10, pady=10)
+continue_button.grid(row=4, column=2, padx=10, pady=10)
 
 stop_button = tk.Button(root, text="Stop", command=stop_typing)
-stop_button.grid(row=3, column=3, padx=10, pady=10)
+stop_button.grid(row=4, column=3, padx=10, pady=10)
 
 increase_speed_button = tk.Button(
     root, text="Increase Speed", command=lambda: increase_speed(min_wpm_input, max_wpm_input)
 )
-increase_speed_button.grid(row=4, column=1, columnspan=2, padx=10, pady=10)
+increase_speed_button.grid(row=5, column=1, columnspan=2, padx=10, pady=10)
 
 # Status Label
 status_label = tk.Label(root, text="Status: Ready", fg="blue")
-status_label.grid(row=5, column=0, columnspan=4, padx=10, pady=10)
+status_label.grid(row=6, column=0, columnspan=4, padx=10, pady=10)
 
 # Run the GUI
 root.mainloop()
