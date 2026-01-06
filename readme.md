@@ -1,188 +1,48 @@
 # Auto Typing Tool
 
-Welcome to the **Auto Typing Tool**, an advanced, fast, and optimized solution for automated typing tasks, built with Python! This tool is designed to save time and effort, offering unmatched speed and precision. Whether you need a bot for text simulation or just an auto typer to handle repetitive tasks, this is the fastest and best choice.
+Simulates typing for code demonstrations and tutorials.
 
 ![Auto Typing GUI Screenshot](auto-typer-screen.png)
 
 ## Features
 
-### 🚀 Speed and Performance
-- **Human-like typing speed variation**: Typing speed dynamically adjusts based on code patterns for more realistic simulation
-  - Keywords (public, static, void, etc.) are typed ~1.8x faster
-  - Common boilerplate (System.out.println, etc.) typed ~2.0x faster  
-  - Bracket pairs (<>, [], (), {}) typed ~3.0x faster
-  - Natural pauses after punctuation (semicolons, braces)
-- Adjustable typing speed with **Min WPM** and **Max WPM**.
-- Smooth, natural typing simulation using the `pynput` library.
-- **Optimized typing delays** for realistic performance.
-- Speed adjustment: Increase typing speed dynamically by **1.5x**.
-- **Pattern recognition** for Java, JavaScript, TypeScript, React, CSS, Python, C++, and C# code
+- Adjustable WPM with pattern-based speed variation
+- Language support: Java, JavaScript, TypeScript, React, CSS, Python, C++, C#
+- Pause directives: `{{PAUSE:X}}` pauses for X seconds (max 60)
+- Skip leading whitespace option for IDEs with auto-indent
 
-### 💻 User-Friendly Interface
-- Built with **Tkinter**, providing a clean and interactive GUI.
-- Editable input fields for custom text and speed control.
-- Real-time status updates for better usability.
-- Language selection dropdown to optimize typing for specific programming languages
-- **Help button** with setup instructions for accessibility permissions (especially for macOS users)
+## Installation
 
-### 🔄 Typing Controls
-- **Start**: Begin typing with your configured speed.
-- **Pause**: Temporarily halt the typing process.
-- **Continue**: Resume typing seamlessly.
-- **Stop**: Stop and reset the progress at any time.
-- **Ignore leading whitespace**: Toggle to skip leading spaces/tabs at the beginning of lines (useful for IDEs with auto-indent)
+### Running the App (macOS)
 
-### ⏸️ Pause Directives
-- Insert pauses directly in your text using `{{PAUSE:X}}` syntax
-- `X` is the duration in seconds (supports decimals)
-- Pause directives are executed but **not typed** in the output
-- Maximum pause duration: 60 seconds
-- Uses double curly braces to avoid conflicts with Java/code syntax
+1. Download the latest release from the github release page
+1. Run the app
+1. Grant accessibility permissions: **System Settings → Privacy & Security → Accessibility → Add the app**
 
-### 🧠 Intelligent Design
-- Handles large text inputs effortlessly.
-- Dynamically calculates delay per character for optimized performance.
-- Safe and robust threading to ensure smooth operation.
+> **Note**: After each new build, remove the old app from Accessibility permissions and re-add the new one.
 
-## Getting Started
+### Development Setup
 
-Follow these steps to set up and run the Auto Typing Tool on your system.
+1. Clone/download the repo
+1. Install pynput: `pipx install pynput`
+1. Run main.py: `python3 src/main.py`
 
-### Prerequisites
-Make sure you have the following installed:
-- **Python 3.6+**
-- Required libraries:
-  - `tkinter`
-  - `pynput`
+> **Note**: Running via `python3`, or `python`, requires granting accessibility permissions to your terminal app (e.g., Terminal, iTerm2) or Python executable. Do this at your own risk. If permissions don't work, build the app with `python build.py` and run the `.app` to test keyboard simulation.
 
-You can install the `pynput` library using pip:
-```bash
-pip install pynput
+## Usage
+
+1. Set WPM range and language
+2. Paste text
+3. Click **Start** (3-second delay to switch windows)
+
+### Pause Directive
+
+```java
+System.out.println("Hello");
+{{PAUSE:2}}
+System.out.println("World");  // Typed after 2s pause
 ```
-
-#### macOS Users - Important Setup Step
-On macOS, you need to grant accessibility permissions for the app to simulate keyboard input:
-
-1. Open **System Settings** (or **System Preferences** on older versions)
-2. Navigate to **Privacy & Security**
-3. Click on **Accessibility**
-4. Click the lock icon (🔒) to make changes
-5. Enter your password when prompted
-6. Find **Python** or **Auto-Typing-Tool** in the list and enable it
-7. If not listed, click the **+** button and add the application
-
-You can also click the **ℹ️ Help** button in the application for detailed setup instructions.
-
-**Note:** You may need to restart the application after granting permissions.
-
-### Installation
-1. Clone the repository or download the script.
-2. Save the file as `auto_typing_tool.py`.
-3. Open a terminal and navigate to the script’s directory.
-
-### Running the Application
-To start the Auto Typing Tool:
-```bash
-python auto_typing_tool.py
-```
-This will launch the graphical interface where you can configure typing parameters and start auto typing.
-
-## How to Use
-
-1. **Get Help (if needed)**:
-   - Click the **ℹ️ Help** button to view setup instructions, especially for macOS accessibility permissions.
-2. **Set Typing Speed**:
-   - Enter desired values for **Min WPM** and **Max WPM** in the input fields.
-3. **Select Language**:
-   - Choose your programming language from the dropdown (Java, JavaScript, TypeScript, React, CSS, Python, C++, C#).
-   - The tool will automatically apply human-like speed variations based on language-specific patterns.
-4. **Configure Whitespace Handling** (optional):
-   - Check **"Ignore leading whitespace"** if typing into an IDE that automatically adds indentation.
-   - This prevents duplicate indentation by skipping spaces/tabs at the beginning of lines.
-   - Useful for IntelliJ IDEA, VS Code, PyCharm, and other IDEs with auto-indent features.
-5. **Input Text**:
-   - Paste or type your target text (e.g., Java code) in the **Main Text** field.
-6. **Add Pauses** (optional):
-   - Insert `{{PAUSE:X}}` anywhere in your text to add a pause of X seconds.
-   - Example: `System.out.println("Hello");{{PAUSE:2}}` pauses for 2 seconds after typing.
-   - The pause directive itself is not typed—only the pause is executed.
-7. **Start Typing**:
-   - Click the **Start** button to begin the auto typing process.
-   - The tool will vary typing speed based on detected code patterns for a more realistic experience.
-8. **Control Typing**:
-   - Use the **Pause**, **Continue**, and **Stop** buttons to control the operation.
-8. **Boost Speed**:
-   - Click the **Increase Speed** button to raise the typing speed by 1.5x instantly.
-
-## System Functionalities
-
-| Functionality         | Description                                                                 |
-|-----------------------|-----------------------------------------------------------------------------|
-| **Help Button**       | Displays setup instructions, including macOS accessibility permissions.    |
-| **Start Typing**      | Begins typing the text at the configured speed with human-like variations. |
-| **Pause Typing**      | Pauses the typing process temporarily.                                     |
-| **Continue Typing**   | Resumes typing from where it was paused.                                   |
-| **Stop Typing**       | Stops the typing process and resets progress.                              |
-| **Increase Speed**    | Dynamically increases typing speed by 1.5x, updating WPM values.           |
-| **Language Selection**| Choose programming language for optimized pattern-based typing.            |
-| **Pattern Recognition**| Automatically detects code patterns and adjusts typing speed accordingly.  |
-| **Pause Directives**  | Insert `{{PAUSE:X}}` in text to pause for X seconds during typing.         |
-| **Ignore Leading Whitespace**| Skips leading spaces/tabs at line starts to prevent duplicate indentation in IDEs. |
-| **GUI Interaction**   | Intuitive interface for configuring and controlling the auto typing bot.   |
-
-## Technical Details
-
-- **Language**: Python
-- **Frameworks**: Tkinter for GUI, Pynput for keyboard simulation.
-- **Pattern Recognition**: Custom pattern matcher for language-specific code patterns.
-- **Threading**: Ensures seamless typing without freezing the interface.
-- **Pause Directives**: `{{PAUSE:X}}` syntax for inserting custom pauses (0-60 seconds).
-- **Intelligent Speed Variation**: Applies different typing speeds based on:
-  - Keywords (e.g., `public`, `class`, `int`) - 1.8x faster
-  - Boilerplate code (e.g., `System.out.println`, `public static void main`) - 2.0x faster
-  - Bracket pairs (e.g., `{}`, `[]`, `()`, `<>`) - 3.0x faster
-  - Operators and punctuation - Variable speeds with natural pauses
-  - Custom identifiers - Base typing speed
-- **Logging**: Debug logs saved to `auto_typing_debug.log` in your system's temp directory for troubleshooting.
-
-## Why Choose This Auto Typing Tool?
-
-- **Fastest Auto Typer**: Configurable speeds ensure you’re always ahead.
-- **Best Python Typing Bot**: Built with clean, modular code.
-- **SEO-Optimized**: Perfect for text simulation, writing bots, and automation tasks.
-- **Lightweight and Efficient**: Requires minimal resources to operate.
-
-## Contribution
-
-We welcome contributions to improve this Auto Typing Tool! Feel free to fork the repository, create new features, or optimize the existing ones.
 
 ## License
-This project is licensed under the MIT License. You’re free to use, modify, and distribute this tool as long as proper credit is given.
 
----
-
-Download, run, and experience the fastest and best **Auto Typing Bot** built with Python today!
-
-
-## Testing the Features
-
-You can test the features without running the GUI:
-
-```bash
-# Run the pattern detection test
-python3 test_pattern_typing.py
-
-# Run the typing speed demonstration
-python3 demo_typing_speed.py
-
-# Test the whitespace ignore feature
-python3 test_whitespace_ignore.py
-
-# Demonstrate the whitespace ignore feature
-python3 demo_whitespace_feature.py
-
-# Test resume functionality with whitespace handling
-python3 test_resume_whitespace.py
-```
-
-These scripts will show you how the tool detects code patterns and applies speed variations.
+MIT
