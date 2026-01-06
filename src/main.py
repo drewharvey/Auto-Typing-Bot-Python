@@ -16,7 +16,6 @@ DEFAULT_START_DELAY = 3  # Seconds to wait before starting typing
 DEFAULT_MIN_WPM = 100
 DEFAULT_MAX_WPM = 250
 CHARS_PER_WORD = 5  # Standard typing test assumption
-TEXT_WIDGET_WIDTH = 50
 TEXT_WIDGET_HEIGHT = 15
 LANGUAGE_DROPDOWN_WIDTH = 12
 
@@ -211,6 +210,17 @@ def on_whitespace_toggle():
 root = tk.Tk()
 root.title("Auto Typing Tool")
 
+# Min WPM and Max WPM Inputs
+tk.Label(root, text="Min WPM:").grid(row=0, column=0, sticky="e")
+min_wpm_input = tk.Entry(root, width=10)
+min_wpm_input.grid(row=0, column=1)
+min_wpm_input.insert(0, min_wpm)
+
+tk.Label(root, text="Max WPM:").grid(row=0, column=2, sticky="e")
+max_wpm_input = tk.Entry(root, width=10)
+max_wpm_input.grid(row=0, column=3)
+max_wpm_input.insert(0, max_wpm)
+
 # Help/Info button - placed at top right
 help_button = tk.Button(
     root, 
@@ -221,21 +231,10 @@ help_button = tk.Button(
 )
 help_button.grid(row=0, column=4, padx=10, pady=5, sticky="e")
 
-# Min WPM and Max WPM Inputs
-tk.Label(root, text="Min WPM:").grid(row=0, column=0, padx=10, pady=5, sticky="e")
-min_wpm_input = tk.Entry(root, width=10)
-min_wpm_input.grid(row=0, column=1, padx=10, pady=5)
-min_wpm_input.insert(0, min_wpm)
-
-tk.Label(root, text="Max WPM:").grid(row=0, column=2, padx=10, pady=5, sticky="e")
-max_wpm_input = tk.Entry(root, width=10)
-max_wpm_input.grid(row=0, column=3, padx=10, pady=5)
-max_wpm_input.insert(0, max_wpm)
-
 # Text Area for Main Text
-tk.Label(root, text="Main Text:").grid(row=1, column=0, columnspan=4, padx=10, pady=5)
-text_widget = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=TEXT_WIDGET_WIDTH, height=TEXT_WIDGET_HEIGHT)
-text_widget.grid(row=2, column=0, columnspan=4, padx=10, pady=5)
+tk.Label(root, text="Main Text:").grid(row=1, column=0, columnspan=5)
+text_widget = scrolledtext.ScrolledText(root, wrap=tk.WORD, height=TEXT_WIDGET_HEIGHT)
+text_widget.grid(row=2, column=0, columnspan=5, padx=10, pady=5)
 
 def focus_handler(event):
     """Ensure editor field gets focus only when explicitly clicked."""
