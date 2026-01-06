@@ -9,6 +9,7 @@ import tempfile
 import os
 import platform
 from pattern_matcher import PatternMatcher
+from pause_directive import PauseDirectiveParser
 
 # Globals
 start_delay = 3  # Seconds to wait before starting typing
@@ -20,6 +21,7 @@ typing_thread = None
 keyboard = Controller()
 pattern_matcher = PatternMatcher('java')  # Default to Java
 ignore_leading_whitespace = False  # Toggle for ignoring leading whitespace
+pause_parser = PauseDirectiveParser()  # Parser for {{PAUSE:X}} directives
 
 # Configure logging
 log_file = os.path.join(tempfile.gettempdir(), 'auto_typing_debug.log')
@@ -52,6 +54,17 @@ def auto_type(text_widget):
     while current_position < len(text):
         if not is_typing:
             break
+        
+        # Check for pause directive at current position (highest priority)
+        pause_directive = pause_parser.find_directive_at_position(text, current_position)
+        if pause_directive:
+            logging.info(f"Executing pause directive: {pause_directive.duration}s at position {current_position}")
+            time.sleep(pause_directive.duration)
+            current_position = pause_directive.end_position  # Skip past the directive
+            # After a pause directive, check if we're now at line start
+            if current_position > 0 and current_position < len(text):
+                at_line_start = (text[current_position - 1] == '\n')
+            continue
         
         current_char = text[current_position]
         
