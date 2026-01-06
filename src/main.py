@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import scrolledtext, messagebox
+from tkinter import scrolledtext
 from pynput.keyboard import Controller
 import threading
 import random
@@ -7,9 +7,9 @@ import time
 import logging
 import tempfile
 import os
-import platform
 from pattern_matcher import PatternMatcher
 from pause_directive import PauseDirectiveParser
+from help_window import HelpWindow
 
 # Constants
 DEFAULT_START_DELAY = 3  # Seconds to wait before starting typing
@@ -224,89 +224,6 @@ def on_whitespace_toggle():
     status = "enabled" if ignore_leading_whitespace else "disabled"
     update_status(f"Ignore leading whitespace {status}")
 
-def show_help_info():
-    """Display help information popup with accessibility setup instructions and features."""
-    system = platform.system()
-    
-    # Build the help message
-    title = "Auto Typing Tool - Help"
-    
-    # Pause directive feature documentation
-    pause_feature_info = """
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-PAUSE DIRECTIVE FEATURE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Add pauses during typing using the {{PAUSE:X}} syntax:
-
-  {{PAUSE:2}}       Pause for 2 seconds
-  {{PAUSE:0.5}}     Pause for 0.5 seconds
-  {{PAUSE:10}}      Pause for 10 seconds
-
-• The pause directive is executed but NOT typed
-• Maximum pause duration: 60 seconds
-• Syntax uses double curly braces (won't conflict with Java)
-
-Example in code:
-  public static void main(String[] args) {
-      {{PAUSE:2}}
-      System.out.println("After 2 second pause");
-  }
-"""
-
-    if system == "Darwin":  # macOS
-        message = """AUTO TYPING TOOL - HELP
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-macOS ACCESSIBILITY SETUP
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-For the Auto Typing Tool to work on macOS, you need to grant accessibility permissions:
-
-1. Open System Settings (or System Preferences)
-2. Navigate to Privacy & Security
-3. Click on Accessibility
-4. Click the lock icon (🔒) to make changes
-5. Enter your password if prompted
-6. Find "Python" or "Auto-Typing-Tool" in the list
-7. Enable the checkbox next to it
-8. If not in the list, click the '+' button and add it
-
-Note: You may need to restart the application after granting permissions.
-""" + pause_feature_info
-    else:
-        message = """AUTO TYPING TOOL - HELP
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SETUP INFORMATION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-This tool uses keyboard automation to simulate typing.
-
-macOS Users:
-• Enable accessibility permissions
-• Go to: System Settings → Privacy & Security → Accessibility
-• Add Python or Auto-Typing-Tool to allowed applications
-
-Linux Users:
-• Should work without special permissions
-• Ensure pynput is installed (pip install pynput)
-
-Windows Users:
-• Should work without special permissions
-• Some antivirus software may require approval
-""" + pause_feature_info + """
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-TROUBLESHOOTING
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-If you encounter issues, check that:
-• pynput library is installed
-• You have proper keyboard control permissions
-• No other application is blocking keyboard input"""
-    
-    messagebox.showinfo(title, message)
-
 # Create the GUI
 root = tk.Tk()
 root.title("Auto Typing Tool")
@@ -315,7 +232,7 @@ root.title("Auto Typing Tool")
 help_button = tk.Button(
     root, 
     text="ℹ️ Help",
-    command=show_help_info,
+    command=HelpWindow.open,
     relief=tk.RAISED,
     borderwidth=1
 )
