@@ -25,14 +25,17 @@ def simulate_whitespace_skip(text, ignore_leading_whitespace):
             # Skip this character
             continue
         
+        # We're going to type this character, so update line start tracking
+        # If we type a non-whitespace char, we're no longer at line start
+        if char not in ' \t':
+            at_line_start = False
+        
         # Add character to result
         result.append(char)
         
-        # Update line start tracking
+        # After typing a newline, next position is at line start
         if char == '\n':
             at_line_start = True
-        elif char not in ' \t':
-            at_line_start = False
     
     return ''.join(result)
 

@@ -53,10 +53,9 @@ def auto_type(text_widget):
             current_position += 1
             continue
         
-        # Update line start tracking
-        if current_char == '\n':
-            at_line_start = True
-        elif current_char not in ' \t':
+        # We're going to type this character, so update line start tracking
+        # If we type a non-whitespace char, we're no longer at line start
+        if current_char not in ' \t':
             at_line_start = False
         
         # Check if we're at the start of a known pattern
@@ -77,10 +76,17 @@ def auto_type(text_widget):
                         f"with speed_multiplier={pattern_info['speed_multiplier']:.2f}, "
                         f"delay={adjusted_delay:.4f}s per char")
             
+            # Type the pattern character by character
             for i in range(pattern_length):
                 if not is_typing:
                     break
-                keyboard.type(text[current_position])
+                char = text[current_position]
+                keyboard.type(char)
+                
+                # After typing a newline, next position is at line start
+                if char == '\n':
+                    at_line_start = True
+                
                 current_position += 1
                 if i < pattern_length - 1:  # Don't delay after the last character
                     time.sleep(adjusted_delay)
@@ -91,7 +97,12 @@ def auto_type(text_widget):
                 time.sleep(pattern_info['pause_after'])
         else:
             # No pattern match - use default speed
-            keyboard.type(text[current_position])
+            keyboard.type(current_char)
+            
+            # After typing a newline, next position is at line start
+            if current_char == '\n':
+                at_line_start = True
+            
             current_position += 1
             
             # WPM delay: Convert WPM to delay per character (5 characters per word)
