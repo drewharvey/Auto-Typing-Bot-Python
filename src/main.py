@@ -13,8 +13,8 @@ from pattern_matcher import PatternMatcher
 # Globals
 is_typing = False
 current_position = 0
-min_wpm = 40
-max_wpm = 60
+min_wpm = 100
+max_wpm = 250
 typing_thread = None
 keyboard = Controller()
 pattern_matcher = PatternMatcher('java')  # Default to Java
@@ -270,12 +270,12 @@ help_button.grid(row=0, column=4, padx=10, pady=5, sticky="e")
 tk.Label(root, text="Min WPM:").grid(row=0, column=0, padx=10, pady=5, sticky="e")
 min_wpm_input = tk.Entry(root, width=10)
 min_wpm_input.grid(row=0, column=1, padx=10, pady=5)
-min_wpm_input.insert(0, "100")
+min_wpm_input.insert(0, min_wpm)
 
 tk.Label(root, text="Max WPM:").grid(row=0, column=2, padx=10, pady=5, sticky="e")
 max_wpm_input = tk.Entry(root, width=10)
 max_wpm_input.grid(row=0, column=3, padx=10, pady=5)
-max_wpm_input.insert(0, "250")
+max_wpm_input.insert(0, max_wpm)
 
 # Text Area for Main Text
 tk.Label(root, text="Main Text:").grid(row=1, column=0, columnspan=4, padx=10, pady=5)
