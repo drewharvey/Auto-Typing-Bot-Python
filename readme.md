@@ -7,15 +7,22 @@ Welcome to the **Auto Typing Tool**, an advanced, fast, and optimized solution f
 ## Features
 
 ### 🚀 Speed and Performance
+- **Human-like typing speed variation**: Typing speed dynamically adjusts based on code patterns for more realistic simulation
+  - Keywords (public, static, void, etc.) are typed ~1.8x faster
+  - Common boilerplate (System.out.println, etc.) typed ~2.0x faster  
+  - Bracket pairs (<>, [], (), {}) typed ~3.0x faster
+  - Natural pauses after punctuation (semicolons, braces)
 - Adjustable typing speed with **Min WPM** and **Max WPM**.
 - Smooth, natural typing simulation using the `pynput` library.
 - **Optimized typing delays** for realistic performance.
 - Speed adjustment: Increase typing speed dynamically by **1.5x**.
+- **Pattern recognition** for Java, JavaScript, TypeScript, React, CSS, Python, C++, and C# code
 
 ### 💻 User-Friendly Interface
 - Built with **Tkinter**, providing a clean and interactive GUI.
 - Editable input fields for custom text and speed control.
 - Real-time status updates for better usability.
+- Language selection dropdown to optimize typing for specific programming languages
 
 ### 🔄 Typing Controls
 - **Start**: Begin typing with your configured speed.
@@ -60,32 +67,45 @@ This will launch the graphical interface where you can configure typing paramete
 
 1. **Set Typing Speed**:
    - Enter desired values for **Min WPM** and **Max WPM** in the input fields.
-2. **Input Text**:
-   - Paste or type your target text in the **Main Text** field.
-3. **Start Typing**:
+2. **Select Language**:
+   - Choose your programming language from the dropdown (Java, JavaScript, TypeScript, React, CSS, Python, C++, C#).
+   - The tool will automatically apply human-like speed variations based on language-specific patterns.
+3. **Input Text**:
+   - Paste or type your target text (e.g., Java code) in the **Main Text** field.
+4. **Start Typing**:
    - Click the **Start** button to begin the auto typing process.
-4. **Control Typing**:
+   - The tool will vary typing speed based on detected code patterns for a more realistic experience.
+5. **Control Typing**:
    - Use the **Pause**, **Continue**, and **Stop** buttons to control the operation.
-5. **Boost Speed**:
+6. **Boost Speed**:
    - Click the **Increase Speed** button to raise the typing speed by 1.5x instantly.
 
 ## System Functionalities
 
 | Functionality         | Description                                                                 |
 |-----------------------|-----------------------------------------------------------------------------|
-| **Start Typing**      | Begins typing the text at the configured speed.                            |
+| **Start Typing**      | Begins typing the text at the configured speed with human-like variations. |
 | **Pause Typing**      | Pauses the typing process temporarily.                                     |
 | **Continue Typing**   | Resumes typing from where it was paused.                                   |
 | **Stop Typing**       | Stops the typing process and resets progress.                              |
 | **Increase Speed**    | Dynamically increases typing speed by 1.5x, updating WPM values.           |
+| **Language Selection**| Choose programming language for optimized pattern-based typing.            |
+| **Pattern Recognition**| Automatically detects code patterns and adjusts typing speed accordingly.  |
 | **GUI Interaction**   | Intuitive interface for configuring and controlling the auto typing bot.   |
 
 ## Technical Details
 
 - **Language**: Python
 - **Frameworks**: Tkinter for GUI, Pynput for keyboard simulation.
+- **Pattern Recognition**: Custom pattern matcher for language-specific code patterns.
 - **Threading**: Ensures seamless typing without freezing the interface.
-- **Randomized Delays**: Adds realism by introducing slight variations in typing speed.
+- **Intelligent Speed Variation**: Applies different typing speeds based on:
+  - Keywords (e.g., `public`, `class`, `int`) - 1.8x faster
+  - Boilerplate code (e.g., `System.out.println`, `public static void main`) - 2.0x faster
+  - Bracket pairs (e.g., `{}`, `[]`, `()`, `<>`) - 3.0x faster
+  - Operators and punctuation - Variable speeds with natural pauses
+  - Custom identifiers - Base typing speed
+- **Logging**: Debug logs saved to `auto_typing_debug.log` in your system's temp directory for troubleshooting.
 
 ## Why Choose This Auto Typing Tool?
 
@@ -105,3 +125,17 @@ This project is licensed under the MIT License. You’re free to use, modify, an
 
 Download, run, and experience the fastest and best **Auto Typing Bot** built with Python today!
 
+
+## Testing the Feature
+
+You can test the pattern-based typing feature without running the GUI:
+
+```bash
+# Run the pattern detection test
+python3 test_pattern_typing.py
+
+# Run the typing speed demonstration
+python3 demo_typing_speed.py
+```
+
+These scripts will show you how the tool detects code patterns and applies speed variations.
