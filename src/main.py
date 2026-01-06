@@ -11,12 +11,22 @@ import platform
 from pattern_matcher import PatternMatcher
 from pause_directive import PauseDirectiveParser
 
+# Constants
+DEFAULT_START_DELAY = 3  # Seconds to wait before starting typing
+DEFAULT_MIN_WPM = 100
+DEFAULT_MAX_WPM = 250
+SPEED_INCREASE_MULTIPLIER = 1.5
+CHARS_PER_WORD = 5  # Standard typing test assumption
+TEXT_WIDGET_WIDTH = 50
+TEXT_WIDGET_HEIGHT = 15
+LANGUAGE_DROPDOWN_WIDTH = 12
+
 # Globals
-start_delay = 3  # Seconds to wait before starting typing
+start_delay = DEFAULT_START_DELAY
 is_typing = False
 current_position = 0
-min_wpm = 100
-max_wpm = 250
+min_wpm = DEFAULT_MIN_WPM
+max_wpm = DEFAULT_MAX_WPM
 typing_thread = None
 keyboard = Controller()
 pattern_matcher = PatternMatcher('java')  # Default to Java
@@ -90,7 +100,7 @@ def auto_type(text_widget):
             
             # Type each character of the pattern with adjusted speed
             pattern_length = pattern_info['length']
-            base_delay = 60 / (random.uniform(min_wpm, max_wpm) * 5)
+            base_delay = 60 / (random.uniform(min_wpm, max_wpm) * CHARS_PER_WORD)
             adjusted_delay = base_delay / pattern_info['speed_multiplier']
             
             logging.info(f"Typing pattern '{pattern_info['matched_text']}' (category: {pattern_info['category']}) "
@@ -126,8 +136,8 @@ def auto_type(text_widget):
             
             current_position += 1
             
-            # WPM delay: Convert WPM to delay per character (5 characters per word)
-            delay = 60 / (random.uniform(min_wpm, max_wpm) * 5)
+            # WPM delay: Convert WPM to delay per character
+            delay = 60 / (random.uniform(min_wpm, max_wpm) * CHARS_PER_WORD)
             time.sleep(delay)
 
 def start_typing(text_widget, min_wpm_input, max_wpm_input):
@@ -179,13 +189,13 @@ def stop_typing():
     update_status("Typing stopped. Progress reset.")
 
 def increase_speed(min_wpm_input, max_wpm_input):
-    """Increases typing speed by 1.5x."""
+    """Increases typing speed by multiplier."""
     global min_wpm, max_wpm
     try:
         min_wpm = int(min_wpm_input.get())
         max_wpm = int(max_wpm_input.get())
-        min_wpm = int(min_wpm * 1.5)
-        max_wpm = int(max_wpm * 1.5)
+        min_wpm = int(min_wpm * SPEED_INCREASE_MULTIPLIER)
+        max_wpm = int(max_wpm * SPEED_INCREASE_MULTIPLIER)
         min_wpm_input.delete(0, tk.END)
         min_wpm_input.insert(0, str(min_wpm))
         max_wpm_input.delete(0, tk.END)
@@ -324,7 +334,7 @@ max_wpm_input.insert(0, max_wpm)
 
 # Text Area for Main Text
 tk.Label(root, text="Main Text:").grid(row=1, column=0, columnspan=4, padx=10, pady=5)
-text_widget = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=50, height=15)
+text_widget = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=TEXT_WIDGET_WIDTH, height=TEXT_WIDGET_HEIGHT)
 text_widget.grid(row=2, column=0, columnspan=4, padx=10, pady=5)
 
 def focus_handler(event):
@@ -353,7 +363,7 @@ language_dropdown = tk.OptionMenu(
     "C++",
     "C#"
 )
-language_dropdown.config(width=12)
+language_dropdown.config(width=LANGUAGE_DROPDOWN_WIDTH)
 language_dropdown.pack(side=tk.LEFT)
 
 # Bind language change event
